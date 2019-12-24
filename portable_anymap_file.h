@@ -1,4 +1,4 @@
-﻿// Copyright (c) Team CharLS.
+// Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
 #pragma once
@@ -7,7 +7,6 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <ios>
 
 namespace charls_test {
 
@@ -22,8 +21,8 @@ public:
     explicit portable_anymap_file(const char* filename)
     {
         std::ifstream pnm_file;
-        pnm_file.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);
-        pnm_file.open(filename, std::ios_base::in | std::ios_base::binary);
+        pnm_file.exceptions(std::ifstream::eofbit | std::ifstream::failbit | std::ifstream::badbit);
+        pnm_file.open(filename, std::ifstream::in | std::ifstream::binary);
 
         std::vector<int> header_info = read_header(pnm_file);
         if (header_info.size() != 4)

@@ -1,0 +1,14 @@
+# Copyright (c) Team CharLS.
+# SPDX-License-Identifier: BSD-3-Clause
+
+root = true
+
+# Default settings
+[*]
+charset = utf-8
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.{h,cpp}]
+indent_size = 4
+insert_final_newline = true
