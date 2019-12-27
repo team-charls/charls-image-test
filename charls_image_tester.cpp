@@ -118,7 +118,8 @@ bool check_monochrome_file(const path& source_filename, const interleave_mode in
 
     jpegls_encoder encoder;
     encoder.frame_info({static_cast<uint32_t>(reference_file.width()), static_cast<uint32_t>(reference_file.height()),
-                        reference_file.bits_per_sample(), reference_file.component_count()});
+                        reference_file.bits_per_sample(), reference_file.component_count()})
+        .interleave_mode(interleave_mode);
 
     vector<uint8_t> charls_encoded_data(encoder.estimated_destination_size());
     encoder.destination(charls_encoded_data);
