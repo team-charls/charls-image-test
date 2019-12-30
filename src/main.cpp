@@ -1,7 +1,7 @@
 // charls_image_tester.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "charls/include/charls/charls.h"
+#include <charls/charls.h>
 
 #include "portable_anymap_file.h"
 
