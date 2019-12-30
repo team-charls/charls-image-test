@@ -1,9 +1,11 @@
-// charls_image_tester.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: MIT
 
-#include <charls/charls.h>
+#include "pch.h"
 
 #include "portable_anymap_file.h"
+
+#include <charls/charls.h>
 
 #include <cassert>
 #include <filesystem>
@@ -71,7 +73,7 @@ bool test_by_decoding(const vector<uint8_t>& encoded_source, const vector<uint8_
     {
         for (size_t i = 0; i < uncompressed_source.size(); ++i)
         {
-            if (destination[i] != uncompressed_source[i]) // AreEqual is very slow, pre-test to speed up 50X
+            if (destination[i] != uncompressed_source[i])
             {
                 cout << "Pixel data value doesn't match";
                 return false;
