@@ -114,6 +114,24 @@ path generate_output_filename(const path& source_filename, const interleave_mode
     return output_filename;
 }
 
+const char* interleave_mode_to_string(const interleave_mode interleave_mode) noexcept
+{
+    switch (interleave_mode)
+    {
+    case interleave_mode::none:
+        return "none";
+
+    case interleave_mode::line:
+        return "line";
+
+    case interleave_mode::sample:
+        return "sample";
+    }
+
+    assert(false);
+    return "";
+}
+
 bool check_monochrome_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none)
 {
     const portable_anymap_file reference_file = read_anymap_reference_file(source_filename.string().c_str(), interleave_mode);
@@ -136,9 +154,10 @@ bool check_monochrome_file(const path& source_filename, const interleave_mode in
     output.exceptions(ofstream::eofbit | ofstream::failbit | ofstream::badbit);
     output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), charls_encoded_data.size());
 
-    const double compression_ratio = static_cast<double>(reference_file.image_data().size()) / encoded_size;
+    const double compression_ratio = static_cast<double>(reference_file.image_data().size()) / static_cast<double>(encoded_size);
     cout << "Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
-         << ", compression ratio = " << std::setprecision(2) << compression_ratio << ":1"
+         << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
+         << ", compression ratio = " << std::setprecision(2) << std::fixed << std::showpoint << compression_ratio << ":1"
          << ", encode time = " << std::setprecision(4) << std::chrono::duration<double, std::milli>(encode_duration).count() << " ms\n";
 
     return test_by_decoding(charls_encoded_data, reference_file.image_data());
