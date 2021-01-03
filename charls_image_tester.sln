@@ -9,18 +9,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CharLS", "charls\src\CharLS
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Checked|x64 = Checked|x64
-		Checked|x86 = Checked|x86
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Checked|x64.ActiveCfg = Release|x64
-		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Checked|x64.Build.0 = Release|x64
-		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Checked|x86.ActiveCfg = Release|Win32
-		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Checked|x86.Build.0 = Release|Win32
 		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Debug|x64.ActiveCfg = Debug|x64
 		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Debug|x64.Build.0 = Debug|x64
 		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Debug|x86.ActiveCfg = Debug|Win32
@@ -29,10 +23,6 @@ Global
 		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Release|x64.Build.0 = Release|x64
 		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Release|x86.ActiveCfg = Release|Win32
 		{796BE062-4BAF-42C4-B854-9F1E6C9F3F7C}.Release|x86.Build.0 = Release|Win32
-		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Checked|x64.ActiveCfg = Checked|x64
-		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Checked|x64.Build.0 = Checked|x64
-		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Checked|x86.ActiveCfg = Checked|Win32
-		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Checked|x86.Build.0 = Checked|Win32
 		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Debug|x64.ActiveCfg = Debug|x64
 		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Debug|x64.Build.0 = Debug|x64
 		{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}.Debug|x86.ActiveCfg = Debug|Win32

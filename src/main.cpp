@@ -16,7 +16,7 @@
 using charls::interleave_mode;
 using charls::jpegls_decoder;
 using charls::jpegls_encoder;
-using charls_test::portable_anymap_file;
+using charls::test::portable_anymap_file;
 using std::cout;
 using std::ofstream;
 using std::vector;
@@ -30,8 +30,8 @@ void triplet_to_planar(vector<uint8_t>& buffer, const uint32_t width, const uint
 {
     vector<uint8_t> work_buffer(buffer.size());
 
-    const size_t byte_count = static_cast<size_t>(width) * height;
-    for (size_t index = 0; index < byte_count; index++)
+    const size_t byte_count{static_cast<size_t>(width) * height};
+    for (size_t index{}; index < byte_count; index++)
     {
         work_buffer[index] = buffer[index * 3 + 0];
         work_buffer[index + 1 * byte_count] = buffer[index * 3 + 1];
@@ -88,7 +88,7 @@ path generate_output_filename(const path& source_filename, const interleave_mode
 {
     path output_filename{source_filename};
 
-    const char* mode;
+    const char* mode{""};
     switch (interleave_mode)
     {
     case interleave_mode::none:
@@ -102,11 +102,8 @@ path generate_output_filename(const path& source_filename, const interleave_mode
     case interleave_mode::sample:
         mode = "-sample";
         break;
-
-    default:
-        assert(false);
-        mode = "";
     }
+    assert(strlen(mode));
 
     output_filename.replace_filename(output_filename.stem().string() + mode);
     output_filename.replace_extension(".jls");
@@ -134,25 +131,25 @@ const char* interleave_mode_to_string(const interleave_mode interleave_mode) noe
 
 bool check_monochrome_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none)
 {
-    const portable_anymap_file reference_file = read_anymap_reference_file(source_filename.string().c_str(), interleave_mode);
+    const portable_anymap_file reference_file{read_anymap_reference_file(source_filename.string().c_str(), interleave_mode)};
 
     jpegls_encoder encoder;
-    encoder.frame_info({static_cast<uint32_t>(reference_file.width()), static_cast<uint32_t>(reference_file.height()),
+    encoder.frame_info({reference_file.width(), reference_file.height(),
                         reference_file.bits_per_sample(), reference_file.component_count()})
         .interleave_mode(interleave_mode);
 
     vector<uint8_t> charls_encoded_data(encoder.estimated_destination_size());
     encoder.destination(charls_encoded_data);
 
-    const auto start = steady_clock::now();
-    const size_t encoded_size = encoder.encode(reference_file.image_data());
-    const auto encode_duration = steady_clock::now() - start;
+    const auto start{steady_clock::now()};
+    const size_t encoded_size{encoder.encode(reference_file.image_data())};
+    const auto encode_duration{steady_clock::now() - start};
 
     charls_encoded_data.resize(encoded_size);
 
-    ofstream output(generate_output_filename(source_filename, interleave_mode).string().c_str(), ofstream::binary);
+    ofstream output(generate_output_filename(source_filename, interleave_mode).string().c_str(), ofstream::binary | ofstream::trunc);
     output.exceptions(ofstream::eofbit | ofstream::failbit | ofstream::badbit);
-    output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), charls_encoded_data.size());
+    output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), static_cast<std::streamsize>(charls_encoded_data.size()));
 
     const double compression_ratio = static_cast<double>(reference_file.image_data().size()) / static_cast<double>(encoded_size);
     cout << "Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
@@ -165,7 +162,7 @@ bool check_monochrome_file(const path& source_filename, const interleave_mode in
 
 bool check_color_file(const path& source_filename)
 {
-    auto result = check_monochrome_file(source_filename, interleave_mode::none);
+    auto result{check_monochrome_file(source_filename, interleave_mode::none)};
     if (!result)
         return result;
 
@@ -188,15 +185,15 @@ int main(const int argc, const char* const argv[]) // NOLINT(bugprone-exception-
 
     try
     {
-        for (auto& entry : recursive_directory_iterator(argv[1]))
+        for (const auto& entry : recursive_directory_iterator(argv[1]))
         {
-            const bool monochrome_anymap = entry.path().extension() == ".pgm";
-            const bool color_anymap = entry.path().extension() == ".ppm";
+            const bool monochrome_anymap{entry.path().extension() == ".pgm"};
+            const bool color_anymap{entry.path().extension() == ".ppm"};
 
             if (monochrome_anymap || color_anymap)
             {
                 cout << "Checking file: " << entry.path() << '\n';
-                const bool result = monochrome_anymap ? check_monochrome_file(entry.path()) : check_color_file(entry.path());
+                const bool result{monochrome_anymap ? check_monochrome_file(entry.path()) : check_color_file(entry.path())};
                 if (result)
                 {
                     cout << "Passed\n";

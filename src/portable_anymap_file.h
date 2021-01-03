@@ -8,7 +8,7 @@
 #include <sstream>
 #include <fstream>
 
-namespace charls_test {
+namespace charls::test {
 
 // Purpose: this class can read an image stored in the Portable Anymap Format (PNM).
 //          The 2 binary formats P5 and P6 are supported:
@@ -29,43 +29,43 @@ public:
             throw std::ios_base::failure("Incorrect PNM header");
 
         component_count_ = header_info[0] == 6 ? 3 : 1;
-        width_ = header_info[1];
-        height_ = header_info[2];
+        width_ = static_cast<uint32_t>(header_info[1]);
+        height_ = static_cast<uint32_t>(header_info[2]);
         bits_per_sample_ = log_2(header_info[3] + 1);
 
         const int bytes_per_sample = (bits_per_sample_ + 7) / 8;
         input_buffer_.resize(static_cast<size_t>(width_) * height_ * bytes_per_sample * component_count_);
-        pnm_file.read(reinterpret_cast<char*>(input_buffer_.data()), input_buffer_.size());
+        pnm_file.read(reinterpret_cast<char*>(input_buffer_.data()), static_cast<std::streamsize>(input_buffer_.size()));
 
         convert_to_little_endian_if_needed();
     }
 
-    int width() const noexcept
+    [[nodiscard]] uint32_t width() const noexcept
     {
         return width_;
     }
 
-    int height() const noexcept
+    [[nodiscard]] uint32_t height() const noexcept
     {
         return height_;
     }
 
-    int component_count() const noexcept
+    [[nodiscard]] int32_t component_count() const noexcept
     {
         return component_count_;
     }
 
-    int bits_per_sample() const noexcept
+    [[nodiscard]] int32_t bits_per_sample() const noexcept
     {
         return bits_per_sample_;
     }
 
-    std::vector<uint8_t>& image_data() noexcept
+    [[nodiscard]] std::vector<uint8_t>& image_data() noexcept
     {
         return input_buffer_;
     }
 
-    const std::vector<uint8_t>& image_data() const noexcept
+    [[nodiscard]] const std::vector<uint8_t>& image_data() const noexcept
     {
         return input_buffer_;
     }
@@ -100,7 +100,7 @@ private:
         return result;
     }
 
-    constexpr int32_t log_2(int32_t n) noexcept
+    static constexpr int32_t log_2(const int32_t n) noexcept
     {
         int32_t x = 0;
         while (n > (1 << x))
@@ -122,10 +122,10 @@ private:
         }
     }
 
-    int component_count_;
-    int width_;
-    int height_;
-    int bits_per_sample_;
+    int32_t component_count_;
+    uint32_t width_;
+    uint32_t height_;
+    int32_t bits_per_sample_;
     std::vector<uint8_t> input_buffer_;
 };
 
