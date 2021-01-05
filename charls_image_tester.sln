@@ -7,6 +7,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "charls_image_tester", "src\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CharLS", "charls\src\CharLS.vcxproj", "{1E31F9F1-F175-4082-B3E2-B1F0ECA3F44C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DA0DBA67-5FCB-4863-948C-DB91D3B9E9E4}"
+	ProjectSection(SolutionItems) = preProject
+		.clang-format = .clang-format
+		.clang-tidy = .clang-tidy
+		.editorconfig = .editorconfig
+		default.ruleset = default.ruleset
+		default.ruleset.md = default.ruleset.md
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

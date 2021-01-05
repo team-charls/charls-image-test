@@ -83,6 +83,9 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">

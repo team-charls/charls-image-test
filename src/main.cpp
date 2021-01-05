@@ -8,35 +8,51 @@
 #include <charls/charls.h>
 
 #include <cassert>
+#include <chrono>
 #include <filesystem>
 #include <iostream>
 #include <vector>
-#include <chrono>
 
 using charls::interleave_mode;
 using charls::jpegls_decoder;
 using charls::jpegls_encoder;
 using charls::test::portable_anymap_file;
+using std::byte;
 using std::cout;
 using std::ofstream;
 using std::vector;
-using std::filesystem::path;
-using std::filesystem::recursive_directory_iterator;
 using std::chrono::steady_clock;
+using std::filesystem::path;
 
 namespace {
 
-void triplet_to_planar(vector<uint8_t>& buffer, const uint32_t width, const uint32_t height)
+void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t height, const int32_t bits_per_sample)
 {
-    vector<uint8_t> work_buffer(buffer.size());
+    vector<byte> work_buffer(buffer.size());
 
-    const size_t byte_count{static_cast<size_t>(width) * height};
-    for (size_t index{}; index < byte_count; index++)
+    const size_t samples_per_plane{width * height};
+
+    if (bits_per_sample > 8)
     {
-        work_buffer[index] = buffer[index * 3 + 0];
-        work_buffer[index + 1 * byte_count] = buffer[index * 3 + 1];
-        work_buffer[index + 2 * byte_count] = buffer[index * 3 + 2];
+        const auto* source_buffer16{reinterpret_cast<const uint16_t*>(buffer.data())};
+        auto* buffer16{reinterpret_cast<uint16_t*>(work_buffer.data())};
+        for (size_t i{}; i < samples_per_plane; ++i)
+        {
+            buffer16[i] = source_buffer16[i * 3 + 0];
+            buffer16[i + 1 * samples_per_plane] = source_buffer16[i * 3 + 1];
+            buffer16[i + 2 * samples_per_plane] = source_buffer16[i * 3 + 2];
+        }
     }
+    else
+    {
+        for (size_t i{}; i < samples_per_plane; ++i)
+        {
+            work_buffer[i] = buffer[i * 3 + 0];
+            work_buffer[i + 1 * samples_per_plane] = buffer[i * 3 + 1];
+            work_buffer[i + 2 * samples_per_plane] = buffer[i * 3 + 2];
+        }
+    }
+
     swap(buffer, work_buffer);
 }
 
@@ -47,20 +63,20 @@ portable_anymap_file read_anymap_reference_file(const char* filename, const inte
 
     if (interleave_mode == interleave_mode::none && reference_file.component_count() == 3)
     {
-        triplet_to_planar(reference_file.image_data(), reference_file.width(), reference_file.height());
+        triplet_to_planar(reference_file.image_data(), reference_file.width(), reference_file.height(), reference_file.bits_per_sample());
     }
 
     return reference_file;
 }
 
 
-bool test_by_decoding(const vector<uint8_t>& encoded_source, const vector<uint8_t>& uncompressed_source)
+bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& uncompressed_source)
 {
     jpegls_decoder decoder;
     decoder.source(encoded_source);
     decoder.read_header();
 
-    vector<uint8_t> destination(decoder.destination_size());
+    vector<byte> destination(decoder.destination_size());
     decoder.decode(destination);
 
     if (destination.size() != uncompressed_source.size())
@@ -138,7 +154,7 @@ bool check_monochrome_file(const path& source_filename, const interleave_mode in
                         reference_file.bits_per_sample(), reference_file.component_count()})
         .interleave_mode(interleave_mode);
 
-    vector<uint8_t> charls_encoded_data(encoder.estimated_destination_size());
+    vector<byte> charls_encoded_data(encoder.estimated_destination_size());
     encoder.destination(charls_encoded_data);
 
     const auto start{steady_clock::now()};
@@ -185,7 +201,7 @@ int main(const int argc, const char* const argv[]) // NOLINT(bugprone-exception-
 
     try
     {
-        for (const auto& entry : recursive_directory_iterator(argv[1]))
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(argv[1]))
         {
             const bool monochrome_anymap{entry.path().extension() == ".pgm"};
             const bool color_anymap{entry.path().extension() == ".ppm"};
