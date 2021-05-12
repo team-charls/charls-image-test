@@ -68,28 +68,29 @@ portable_anymap_file read_anymap_reference_file(const char* filename, const inte
 }
 
 
-bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& uncompressed_source)
+bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source, std::chrono::duration<double, std::milli>& decode_duration)
 {
-    jpegls_decoder decoder;
-    decoder.source(encoded_source);
-    decoder.read_header();
+    jpegls_decoder decoder{encoded_source, true};
 
-    vector<byte> destination(decoder.destination_size());
-    decoder.decode(destination);
+    vector<byte> decoded(decoder.destination_size());
 
-    if (destination.size() != uncompressed_source.size())
+    const auto start{steady_clock::now()};
+    decoder.decode(decoded);
+    decode_duration = steady_clock::now() - start;
+
+    if (decoded.size() != original_source.size())
     {
-        cout << "Pixel data size doesn't match";
+        cout << "Pixel data size doesn't match\n";
         return false;
     }
 
     if (decoder.near_lossless() == 0)
     {
-        for (size_t i{}; i < uncompressed_source.size(); ++i)
+        for (size_t i{}; i < original_source.size(); ++i)
         {
-            if (destination[i] != uncompressed_source[i])
+            if (decoded[i] != original_source[i])
             {
-                cout << "Pixel data value doesn't match";
+                cout << "Pixel data value doesn't match\n";
                 return false;
             }
         }
@@ -166,12 +167,17 @@ bool check_monochrome_file(const path& source_filename, const interleave_mode in
     output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), static_cast<std::streamsize>(charls_encoded_data.size()));
 
     const double compression_ratio = static_cast<double>(reference_file.image_data().size()) / static_cast<double>(encoded_size);
+
+    std::chrono::duration<double, std::milli> decode_duration;
+    const bool result{test_by_decoding(charls_encoded_data, reference_file.image_data(), decode_duration)};
+
     cout << "Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
          << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
          << ", compression ratio = " << std::setprecision(2) << std::fixed << std::showpoint << compression_ratio << ":1"
-         << ", encode time = " << std::setprecision(4) << std::chrono::duration<double, std::milli>(encode_duration).count() << " ms\n";
+         << ", encode time = " << std::setprecision(4) << std::chrono::duration<double, std::milli>(encode_duration).count() << " ms"
+         << ", decode time = " << std::setprecision(4) << decode_duration.count() << " ms\n";
 
-    return test_by_decoding(charls_encoded_data, reference_file.image_data());
+    return result;
 }
 
 bool check_color_file(const path& source_filename)
