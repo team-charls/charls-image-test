@@ -1,22 +1,20 @@
 // Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
-#include "pch.h"
+import portable_anymap_file;
 
-#include "portable_anymap_file.h"
+import <charls/charls.h>;
 
-#include <charls/charls.h>
-
-#include <cassert>
-#include <chrono>
-#include <filesystem>
-#include <iostream>
-#include <vector>
+import <chrono>;
+import <filesystem>;
+import <iostream>;
+import <vector>;
+import <fstream>;
+import <cassert>;
 
 using charls::interleave_mode;
 using charls::jpegls_decoder;
 using charls::jpegls_encoder;
-using charls::test::portable_anymap_file;
 using std::byte;
 using std::cout;
 using std::ofstream;
