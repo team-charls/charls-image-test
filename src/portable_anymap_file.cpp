@@ -20,7 +20,7 @@ vector<int> read_header(istream& pnm_file)
 {
     vector<int> result;
 
-    const auto first = static_cast<char>(pnm_file.get());
+    const auto first{static_cast<char>(pnm_file.get())};
 
     // All portable anymap format (PNM) start with the character P.
     if (first != 'P')
@@ -34,7 +34,7 @@ vector<int> read_header(istream& pnm_file)
 
         while (result.size() < 4)
         {
-            int value = -1;
+            int value{-1};
             line >> value;
             if (value <= 0)
                 break;
@@ -47,7 +47,7 @@ vector<int> read_header(istream& pnm_file)
 
 constexpr int32_t log_2(const int32_t n) noexcept
 {
-    int32_t x = 0;
+    int32_t x{};
     while (n > (1 << x))
     {
         ++x;
@@ -60,7 +60,7 @@ void convert_to_little_endian_if_needed(const int32_t bits_per_sample, vector<st
     // Anymap files with multi byte pixels are stored in big endian format in the file.
     if (bits_per_sample > 8)
     {
-        for (size_t i = 0; i < input_buffer.size() - 1; i += 2)
+        for (size_t i{}; i < input_buffer.size() - 1; i += 2)
         {
             std::swap(input_buffer[i], input_buffer[i + 1]);
         }
@@ -75,7 +75,7 @@ portable_anymap_file::portable_anymap_file(const char* filename)
     pnm_file.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
     pnm_file.open(filename, ifstream::in | ifstream::binary);
 
-    vector<int> header_info = read_header(pnm_file);
+    vector<int> header_info{read_header(pnm_file)};
     if (header_info.size() != 4)
         throw ifstream::failure("Incorrect PNM header");
 
@@ -84,7 +84,7 @@ portable_anymap_file::portable_anymap_file(const char* filename)
     height_ = static_cast<uint32_t>(header_info[2]);
     bits_per_sample_ = log_2(header_info[3] + 1);
 
-    const int bytes_per_sample = (bits_per_sample_ + 7) / 8;
+    const int bytes_per_sample{(bits_per_sample_ + 7) / 8};
     input_buffer_.resize(static_cast<size_t>(width_) * height_ * bytes_per_sample * component_count_);
     pnm_file.read(reinterpret_cast<char*>(input_buffer_.data()), static_cast<std::streamsize>(input_buffer_.size()));
 
