@@ -11,12 +11,14 @@ import <iostream>;
 import <vector>;
 import <fstream>;
 import <cassert>;
+import <format>;
 
 using charls::interleave_mode;
 using charls::jpegls_decoder;
 using charls::jpegls_encoder;
 using std::byte;
 using std::cout;
+using std::format;
 using std::ofstream;
 using std::vector;
 using std::chrono::steady_clock;
@@ -55,7 +57,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 }
 
 
-portable_anymap_file read_anymap_reference_file(const char* filename, const interleave_mode interleave_mode)
+[[nodiscard]] portable_anymap_file read_anymap_reference_file(const char* filename, const interleave_mode interleave_mode)
 {
     portable_anymap_file reference_file(filename);
 
@@ -68,7 +70,7 @@ portable_anymap_file read_anymap_reference_file(const char* filename, const inte
 }
 
 
-bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source, std::chrono::duration<double, std::milli>& decode_duration)
+[[nodiscard]] bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source, std::chrono::duration<double, std::milli>& decode_duration)
 {
     jpegls_decoder decoder{encoded_source, true};
 
@@ -99,34 +101,7 @@ bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& or
     return true;
 }
 
-path generate_output_filename(const path& source_filename, const interleave_mode interleave_mode)
-{
-    path output_filename{source_filename};
-
-    const char* mode{""};
-    switch (interleave_mode)
-    {
-    case interleave_mode::none:
-        mode = "-none";
-        break;
-
-    case interleave_mode::line:
-        mode = "-line";
-        break;
-
-    case interleave_mode::sample:
-        mode = "-sample";
-        break;
-    }
-    assert(strlen(mode));
-
-    output_filename.replace_filename(output_filename.stem().string() + mode);
-    output_filename.replace_extension(".jls");
-
-    return output_filename;
-}
-
-const char* interleave_mode_to_string(const interleave_mode interleave_mode) noexcept
+[[nodiscard]] const char* interleave_mode_to_string(const interleave_mode interleave_mode) noexcept
 {
     switch (interleave_mode)
     {
@@ -144,7 +119,16 @@ const char* interleave_mode_to_string(const interleave_mode interleave_mode) noe
     return "";
 }
 
-bool check_monochrome_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none)
+[[nodiscard]] path generate_output_filename(const path& source_filename, const interleave_mode interleave_mode)
+{
+    path output_filename{source_filename};
+    output_filename.replace_filename(output_filename.stem().string() + "-" + interleave_mode_to_string(interleave_mode));
+    output_filename.replace_extension(".jls");
+
+    return output_filename;
+}
+
+[[nodiscard]] bool check_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none, bool color = false)
 {
     const portable_anymap_file reference_file{read_anymap_reference_file(source_filename.string().c_str(), interleave_mode)};
 
@@ -171,31 +155,31 @@ bool check_monochrome_file(const path& source_filename, const interleave_mode in
     std::chrono::duration<double, std::milli> decode_duration;
     const bool result{test_by_decoding(charls_encoded_data, reference_file.image_data(), decode_duration)};
 
-    cout << "Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
-         << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
-         << ", compression ratio = " << std::setprecision(2) << std::fixed << std::showpoint << compression_ratio << ":1"
-         << ", encode time = " << std::setprecision(4) << std::chrono::duration<double, std::milli>(encode_duration).count() << " ms"
-         << ", decode time = " << std::setprecision(4) << decode_duration.count() << " ms\n";
+    const int interleave_mode_width{color ? 6 : 4};
+    cout << format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms\n",
+                   reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
+                   std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count());
 
     return result;
 }
 
-bool check_color_file(const path& source_filename)
+[[nodiscard]] bool check_color_file(const path& source_filename)
 {
-    auto result{check_monochrome_file(source_filename, interleave_mode::none)};
+    auto result{check_file(source_filename, interleave_mode::none, true)};
     if (!result)
         return result;
 
-    result = check_monochrome_file(source_filename, interleave_mode::line);
+    result = check_file(source_filename, interleave_mode::line, true);
     if (!result)
         return result;
 
-    return check_monochrome_file(source_filename, interleave_mode::sample);
+    return check_file(source_filename, interleave_mode::sample, true);
 }
 
 } // namespace
 
 int main(const int argc, const char* const argv[]) // NOLINT(bugprone-exception-escape)
+try
 {
     if (argc < 2)
     {
@@ -203,33 +187,25 @@ int main(const int argc, const char* const argv[]) // NOLINT(bugprone-exception-
         return EXIT_FAILURE;
     }
 
-    try
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(argv[1]))
     {
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(argv[1]))
+        const bool monochrome_anymap{entry.path().extension() == ".pgm"};
+        const bool color_anymap{entry.path().extension() == ".ppm"};
+
+        if (monochrome_anymap || color_anymap)
         {
-            const bool monochrome_anymap{entry.path().extension() == ".pgm"};
-            const bool color_anymap{entry.path().extension() == ".ppm"};
-
-            if (monochrome_anymap || color_anymap)
-            {
-                cout << "Checking file: " << entry.path() << '\n';
-                const bool result{monochrome_anymap ? check_monochrome_file(entry.path()) : check_color_file(entry.path())};
-                if (result)
-                {
-                    cout << "Passed\n";
-                }
-                else
-                {
-                    cout << "Failed\n";
-                    return EXIT_FAILURE;
-                }
-            }
+            cout << format("Checking file: {}\n", entry.path().string());
+            const bool result{monochrome_anymap ? check_file(entry.path()) : check_color_file(entry.path())};
+            cout << format(" Status: {}\n", result ? "Passed" : "Failed");
+            if (!result)
+                return EXIT_FAILURE;
         }
+    }
 
-        return EXIT_SUCCESS;
-    }
-    catch (const std::exception& error)
-    {
-        cout << "Unexpected failure: " << error.what();
-    }
+    return EXIT_SUCCESS;
+}
+catch (const std::exception& error)
+{
+    cout << format("Unexpected failure: {}\n", error.what());
+    return EXIT_FAILURE;
 }

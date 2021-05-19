@@ -47,12 +47,13 @@
         C4711 = function '' selected for automatic inline expansion [Just informational]
         C4738 = storing 32-bit float result in memory, possible loss of performance [Just informational]
         C4820 = bytes' bytes padding added after construct 'member_name' [Just informational]
+        C4866 = compiler may not enforce left-to-right evaluation order [Just informational]
         C5026 = 'type': move constructor was implicitly defined as deleted [Just informational]
         C5027 = 'type': move assignment operator was implicitly defined as deleted  [Just informational]
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
       -->
-      <DisableSpecificWarnings>4514;4571;4623;4625;4626;4668;4710;4711;4738;4820;5026;5027;5039;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4514;4571;4623;4625;4626;4668;4710;4711;4738;4820;4866;5026;5027;5039;5045</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Use the correct value for the __cplusplus macro

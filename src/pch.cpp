@@ -10,5 +10,6 @@ import <string>;
 import <vector>;
 import <utility>;
 import <cassert>;
+import <format>;
 
 import <charls/charls.h>;
