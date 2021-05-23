@@ -7,7 +7,6 @@ import <charls/charls.h>;
 
 import <chrono>;
 import <filesystem>;
-import <iostream>;
 import <vector>;
 import <fstream>;
 import <cassert>;
@@ -17,7 +16,6 @@ using charls::interleave_mode;
 using charls::jpegls_decoder;
 using charls::jpegls_encoder;
 using std::byte;
-using std::cout;
 using std::format;
 using std::ofstream;
 using std::vector;
@@ -25,6 +23,11 @@ using std::chrono::steady_clock;
 using std::filesystem::path;
 
 namespace {
+
+void puts(const std::string& str)
+{
+    std::puts(str.c_str());
+}
 
 void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t height, const int32_t bits_per_sample)
 {
@@ -82,7 +85,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 
     if (decoded.size() != original_source.size())
     {
-        cout << "Pixel data size doesn't match\n";
+        puts("Pixel data size doesn't match");
         return false;
     }
 
@@ -92,7 +95,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
         {
             if (decoded[i] != original_source[i])
             {
-                cout << "Pixel data value doesn't match\n";
+                puts("Pixel data value doesn't match");
                 return false;
             }
         }
@@ -156,9 +159,9 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     const bool result{test_by_decoding(charls_encoded_data, reference_file.image_data(), decode_duration)};
 
     const int interleave_mode_width{color ? 6 : 4};
-    cout << format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms\n",
+    puts(format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
                    reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
-                   std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count());
+                   std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
 
     return result;
 }
@@ -183,7 +186,7 @@ try
 {
     if (argc < 2)
     {
-        cout << "usage: charls_image_tester <directory-to-test>\n";
+        puts("usage: charls_image_tester <directory-to-test>");
         return EXIT_FAILURE;
     }
 
@@ -194,9 +197,9 @@ try
 
         if (monochrome_anymap || color_anymap)
         {
-            cout << format("Checking file: {}\n", entry.path().string());
+            puts(format("Checking file: {}", entry.path().string()));
             const bool result{monochrome_anymap ? check_file(entry.path()) : check_color_file(entry.path())};
-            cout << format(" Status: {}\n", result ? "Passed" : "Failed");
+            puts(format(" Status: {}", result ? "Passed" : "Failed"));
             if (!result)
                 return EXIT_FAILURE;
         }
@@ -206,6 +209,6 @@ try
 }
 catch (const std::exception& error)
 {
-    cout << format("Unexpected failure: {}\n", error.what());
+    puts(format("Unexpected failure: {}", error.what()));
     return EXIT_FAILURE;
 }
