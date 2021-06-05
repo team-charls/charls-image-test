@@ -24,7 +24,7 @@ using std::filesystem::path;
 
 namespace {
 
-void puts(const std::string& str)
+void puts(const std::string& str) noexcept
 {
     std::puts(str.c_str());
 }

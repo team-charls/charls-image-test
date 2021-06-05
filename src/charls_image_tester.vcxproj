@@ -60,6 +60,12 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <LinkIncremental>false</LinkIncremental>
+      <!-- Mark executable image compatible with the Control-flow Enforcement Technology (CET) Shadow Stack. -->
+      <CETCompat>true</CETCompat>
+
+      <!-- Store only the filename of the PDB file into the .exe/.dll for deterministic builds. -->
+      <AdditionalOptions>/PDBALTPATH:%_PDB% %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
