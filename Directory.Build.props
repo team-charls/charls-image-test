@@ -12,8 +12,6 @@
     <!-- Default character set is Unicode (UTF16), defines _UNICODE and UNICODE. -->
     <CharacterSet>Unicode</CharacterSet>
 
-    <PlatformToolset>v142</PlatformToolset>
-
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)default.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
@@ -31,6 +29,10 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
 
+      <!-- Explicit set the 'external' warning level to disabled (Supported since Visual Studio 2019 16.10) -->
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+
       <!--
         Disable level All warnings that are not useful:
         C4514 = function' : unreferenced inline function has been removed [Just informational]
@@ -44,12 +46,13 @@
         C4738 = storing 32-bit float result in memory, possible loss of performance [Just informational]
         C4820 = bytes' bytes padding added after construct 'member_name' [Just informational]
         C4866 = compiler may not enforce left-to-right evaluation order [Just informational]
+        C4868 = compiler may not enforce left-to-right evaluation order in braced initializer list [Just informational]
         C5026 = 'type': move constructor was implicitly defined as deleted [Just informational]
         C5027 = 'type': move assignment operator was implicitly defined as deleted  [Just informational]
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
       -->
-      <DisableSpecificWarnings>4514;4571;4623;4625;4626;4668;4710;4711;4738;4820;4866;5026;5027;5039;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4514;4571;4623;4625;4626;4668;4710;4711;4738;4820;4866;4868;5026;5027;5039;5045</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Use the correct value for the __cplusplus macro

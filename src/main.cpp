@@ -39,7 +39,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     {
         const auto* source_buffer16{reinterpret_cast<const uint16_t*>(buffer.data())};
         auto* buffer16{reinterpret_cast<uint16_t*>(work_buffer.data())};
-        for (size_t i{}; i < samples_per_plane; ++i)
+        for (size_t i{}; i != samples_per_plane; ++i)
         {
             buffer16[i] = source_buffer16[i * 3 + 0];
             buffer16[i + 1 * samples_per_plane] = source_buffer16[i * 3 + 1];
@@ -48,7 +48,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     }
     else
     {
-        for (size_t i{}; i < samples_per_plane; ++i)
+        for (size_t i{}; i != samples_per_plane; ++i)
         {
             work_buffer[i] = buffer[i * 3 + 0];
             work_buffer[i + 1 * samples_per_plane] = buffer[i * 3 + 1];
