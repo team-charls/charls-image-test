@@ -1,8 +1,6 @@
 // Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
 export module portable_anymap_file;
 
 import <cstddef>;
