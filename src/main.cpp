@@ -1,6 +1,8 @@
 // Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
+#ifdef __cpp_modules
+
 import portable_anymap_file;
 
 import <charls/charls.h>;
@@ -12,11 +14,32 @@ import <fstream>;
 import <cassert>;
 import <format>;
 
+#else
+
+#include "portable_anymap_file.h"
+
+#include <charls/charls.h>
+
+#include <cassert>
+#include <chrono>
+#include <filesystem>
+#include <fstream>
+#include <vector>
+
+#if __has_include(<format>)
+#include <format>
+#endif
+
+#ifndef __cpp_lib_format
+#include <iostream>
+#endif
+
+#endif
+
 using charls::interleave_mode;
 using charls::jpegls_decoder;
 using charls::jpegls_encoder;
 using std::byte;
-using std::format;
 using std::ofstream;
 using std::vector;
 using std::chrono::steady_clock;
@@ -131,7 +154,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     return output_filename;
 }
 
-[[nodiscard]] bool check_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none, bool color = false)
+[[nodiscard]] bool check_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none, [[maybe_unused]] bool color = false)
 {
     const portable_anymap_file reference_file{read_anymap_reference_file(source_filename.string().c_str(), interleave_mode)};
 
@@ -158,10 +181,18 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     std::chrono::duration<double, std::milli> decode_duration;
     const bool result{test_by_decoding(charls_encoded_data, reference_file.image_data(), decode_duration)};
 
+#ifdef __cpp_lib_format
     const int interleave_mode_width{color ? 6 : 4};
-    puts(format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
-                   reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
-                   std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
+    puts(std::format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
+                reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
+                std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
+#else
+    std::cout << " Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
+         << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
+         << ", compression ratio = " << std::setprecision(2) << std::fixed << std::showpoint << compression_ratio << ":1"
+         << ", encode time = " << std::setprecision(4) << std::chrono::duration<double, std::milli>(encode_duration).count() << " ms"
+         << ", decode time = " << std::setprecision(4) << decode_duration.count() << " ms\n";
+#endif
 
     return result;
 }
@@ -197,9 +228,19 @@ try
 
         if (monochrome_anymap || color_anymap)
         {
-            puts(format("Checking file: {}", entry.path().string()));
+#ifdef __cpp_lib_format
+            puts(std::format("Checking file: {}", entry.path().string()));
+#else
+            std::cout << "Checking file: " << entry.path() << "\n";
+#endif
             const bool result{monochrome_anymap ? check_file(entry.path()) : check_color_file(entry.path())};
-            puts(format(" Status: {}", result ? "Passed" : "Failed"));
+
+#ifdef __cpp_lib_format
+            puts(std::format(" Status: {}", result ? "Passed" : "Failed"));
+#else
+            std::cout << " Status: " << (result ? "Passed" : "Failed") << "\n";
+#endif
+
             if (!result)
                 return EXIT_FAILURE;
         }
@@ -209,6 +250,10 @@ try
 }
 catch (const std::exception& error)
 {
-    puts(format("Unexpected failure: {}", error.what()));
+#ifdef __cpp_lib_format
+    puts(std::format("Unexpected failure: {}", error.what()));
+#else
+    std::cout << "Unexpected failure: " << error.what();
+#endif
     return EXIT_FAILURE;
 }

@@ -1,12 +1,26 @@
 // Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
+#ifdef __cpp_modules
+
 module portable_anymap_file;
 
 import <string>;
 import <sstream>;
 import <fstream>;
 import <utility>;
+
+#else
+
+#include "portable_anymap_file.h"
+
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <utility>
+#include <vector>
+
+#endif
 
 using std::vector;
 using std::istream;
