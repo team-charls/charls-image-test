@@ -13,6 +13,7 @@ import <vector>;
 import <fstream>;
 import <cassert>;
 import <format>;
+import <span>;
 
 #else
 
@@ -25,11 +26,13 @@ import <format>;
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include <span>
 
 #if __has_include(<format>)
 #include <format>
 #endif
 
+// Not all C++ compilers in C++20 mode offer <format> due to pending defect reports, fallback to iostream.
 #ifndef __cpp_lib_format
 #include <iostream>
 #endif
@@ -98,7 +101,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 
 [[nodiscard]] bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source, std::chrono::duration<double, std::milli>& decode_duration)
 {
-    jpegls_decoder decoder{encoded_source, true};
+    const jpegls_decoder decoder{encoded_source, true};
 
     vector<byte> decoded(decoder.destination_size());
 
@@ -154,7 +157,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     return output_filename;
 }
 
-[[nodiscard]] bool check_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none, [[maybe_unused]] bool color = false)
+[[nodiscard]] bool check_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none, [[maybe_unused]] const bool color = false)
 {
     const portable_anymap_file reference_file{read_anymap_reference_file(source_filename.string().c_str(), interleave_mode)};
 
@@ -248,8 +251,9 @@ try
 
     return EXIT_SUCCESS;
 }
-catch (const std::exception& error)
+catch (const std::runtime_error& error)
 {
+    // By design only catch expected exceptions. Let other types escape to get a dumpfile that can be used for troubleshooting.
 #ifdef __cpp_lib_format
     puts(std::format("Unexpected failure: {}", error.what()));
 #else

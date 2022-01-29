@@ -9,6 +9,9 @@ import <string>;
 import <sstream>;
 import <fstream>;
 import <utility>;
+import <span>;
+import <cassert>;
+import <filesystem>;
 
 #else
 
@@ -19,6 +22,10 @@ import <utility>;
 #include <fstream>
 #include <utility>
 #include <vector>
+#include <span>
+#include <cassert>
+#include <filesystem>
+#include <bit>
 
 #endif
 
@@ -32,10 +39,8 @@ vector<int> read_header(istream& pnm_file)
 {
     vector<int> result;
 
-    const auto first{static_cast<char>(pnm_file.get())};
-
     // All portable anymap format (PNM) start with the character P.
-    if (first != 'P')
+    if (const auto first{static_cast<char>(pnm_file.get())}; first != 'P')
         throw istream::failure("Missing P");
 
     while (result.size() < 4)
@@ -57,17 +62,18 @@ vector<int> read_header(istream& pnm_file)
     return result;
 }
 
-constexpr int32_t log_2(const int32_t n) noexcept
+constexpr int32_t log2_floor(const uint32_t n) noexcept
 {
-    int32_t x{};
-    while (n > (1 << x))
-    {
-        ++x;
-    }
-    return x;
+    return 31 - std::countl_zero(n);
 }
 
-void convert_to_little_endian_if_needed(const int32_t bits_per_sample, vector<std::byte>& input_buffer) noexcept
+constexpr int32_t max_value_to_bits_per_sample(const int32_t max_value) noexcept
+{
+    assert(max_value > 0);
+    return log2_floor(static_cast<uint32_t>(max_value)) + 1;
+}
+
+constexpr void convert_to_little_endian_if_needed(const int32_t bits_per_sample, std::span<std::byte> input_buffer) noexcept
 {
     // Anymap files with multi byte pixels are stored in big endian format in the file.
     if (bits_per_sample > 8)
@@ -81,20 +87,20 @@ void convert_to_little_endian_if_needed(const int32_t bits_per_sample, vector<st
 
 } // namespace
 
-portable_anymap_file::portable_anymap_file(const char* filename)
+portable_anymap_file::portable_anymap_file(std::string_view filename)
 {
     ifstream pnm_file;
     pnm_file.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
-    pnm_file.open(filename, ifstream::in | ifstream::binary);
+    pnm_file.open(std::filesystem::path{filename}, ifstream::in | ifstream::binary);
 
-    vector<int> header_info{read_header(pnm_file)};
+    const vector header_info{read_header(pnm_file)};
     if (header_info.size() != 4)
         throw ifstream::failure("Incorrect PNM header");
 
     component_count_ = header_info[0] == 6 ? 3 : 1;
     width_ = static_cast<uint32_t>(header_info[1]);
     height_ = static_cast<uint32_t>(header_info[2]);
-    bits_per_sample_ = log_2(header_info[3] + 1);
+    bits_per_sample_ = max_value_to_bits_per_sample(header_info[3]);
 
     const int bytes_per_sample{(bits_per_sample_ + 7) / 8};
     input_buffer_.resize(static_cast<size_t>(width_) * height_ * bytes_per_sample * component_count_);

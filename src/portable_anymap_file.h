@@ -4,10 +4,13 @@
 
 #include <cstdint>
 #include <vector>
+#include <string_view>
 
 #define EXPORT_AS_CPP_MODULE
 
 #else
+
+import <string_view>;
 
 #define EXPORT_AS_CPP_MODULE export
 
@@ -25,7 +28,7 @@ EXPORT_AS_CPP_MODULE class portable_anymap_file final
 {
 public:
     /// <exception cref="ifstream::failure">Thrown when the input file cannot be read.</exception>
-    explicit portable_anymap_file(const char* filename);
+    explicit portable_anymap_file(std::string_view filename);
 
     [[nodiscard]] uint32_t width() const noexcept
     {

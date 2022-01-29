@@ -13,5 +13,8 @@ import <vector>;
 import <utility>;
 import <cassert>;
 import <format>;
+import <span>;
+import <string_view>;
+import <cstddef>;
 
 import <charls/charls.h>;
