@@ -45,7 +45,9 @@ using charls::jpegls_encoder;
 using std::byte;
 using std::ofstream;
 using std::vector;
+using std::pair;
 using std::chrono::steady_clock;
+using std::chrono::duration;
 using std::filesystem::path;
 
 namespace {
@@ -99,7 +101,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 }
 
 
-[[nodiscard]] bool test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source, std::chrono::duration<double, std::milli>& decode_duration)
+[[nodiscard]] pair<bool, duration<double, std::milli>> test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source)
 {
     const jpegls_decoder decoder{encoded_source, true};
 
@@ -107,12 +109,12 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 
     const auto start{steady_clock::now()};
     decoder.decode(decoded);
-    decode_duration = steady_clock::now() - start;
+    duration<double, std::milli> decode_duration{steady_clock::now() - start};
 
     if (decoded.size() != original_source.size())
     {
         puts("Pixel data size doesn't match");
-        return false;
+        return {false, decode_duration};
     }
 
     if (decoder.near_lossless() == 0)
@@ -122,12 +124,12 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
             if (decoded[i] != original_source[i])
             {
                 puts("Pixel data value doesn't match");
-                return false;
+                return {false, decode_duration};
             }
         }
     }
 
-    return true;
+    return {true, decode_duration};
 }
 
 [[nodiscard]] const char* interleave_mode_to_string(const interleave_mode interleave_mode) noexcept
@@ -179,10 +181,8 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     output.exceptions(ofstream::eofbit | ofstream::failbit | ofstream::badbit);
     output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), static_cast<std::streamsize>(charls_encoded_data.size()));
 
-    const double compression_ratio = static_cast<double>(reference_file.image_data().size()) / static_cast<double>(encoded_size);
-
-    std::chrono::duration<double, std::milli> decode_duration;
-    const bool result{test_by_decoding(charls_encoded_data, reference_file.image_data(), decode_duration)};
+    const double compression_ratio{static_cast<double>(reference_file.image_data().size()) / static_cast<double>(encoded_size)};
+    const auto [result, decode_duration]{test_by_decoding(charls_encoded_data, reference_file.image_data())};
 
 #ifdef __cpp_lib_format
     const int interleave_mode_width{color ? 6 : 4};
@@ -226,10 +226,7 @@ try
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(argv[1]))
     {
-        const bool monochrome_anymap{entry.path().extension() == ".pgm"};
-        const bool color_anymap{entry.path().extension() == ".ppm"};
-
-        if (monochrome_anymap || color_anymap)
+        if (const bool monochrome_anymap{entry.path().extension() == ".pgm"}; monochrome_anymap || entry.path().extension() == ".ppm")
         {
 #ifdef __cpp_lib_format
             puts(std::format("Checking file: {}", entry.path().string()));
