@@ -6,14 +6,6 @@
 #include <vector>
 #include <string_view>
 
-#define EXPORT_AS_CPP_MODULE
-
-#else
-
-import <string_view>;
-
-#define EXPORT_AS_CPP_MODULE export
-
 #endif
 
 /// <summary>
@@ -24,7 +16,7 @@ import <string_view>;
 /// </summary>
 /// <remarks>This class is designed for test code, robust error handling and input validation is not done.
 /// </remarks>
-EXPORT_AS_CPP_MODULE class portable_anymap_file final
+class portable_anymap_file final
 {
 public:
     /// <exception cref="ifstream::failure">Thrown when the input file cannot be read.</exception>
