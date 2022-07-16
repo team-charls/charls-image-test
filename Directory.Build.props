@@ -13,6 +13,9 @@
     <CharacterSet>Unicode</CharacterSet>
 
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)default.ruleset</CodeAnalysisRuleSet>
+
+    <!-- Vcpkg only understands Debug and Release configurations, map Checked to Debug to prevent warnings. -->
+    <VcpkgConfiguration Condition="'$(Configuration)' == 'Checked'">Debug</VcpkgConfiguration>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -75,13 +78,25 @@
 
   </ItemDefinitionGroup>
 
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Checked'">
+    <ClCompile>
+       <!-- Clang-tidy generates false clang-diagnostic-unused-command-line-argument warnings, use not all options.-->
+      <AdditionalOptions>/Zc:__cplusplus /utf-8 /ZH:SHA_256</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
+  </PropertyGroup>
 
-    <!-- Clang-tidy cannot handle C++20, need to disable it for the moment. -->
-    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+  <PropertyGroup Condition="'$(Configuration)'=='Checked'">
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
+    <!-- Latest clang-tidy crashes during Win32 builds. -->
+    <EnableClangTidyCodeAnalysis Condition="'$(Platform)'!='Win32'">true</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">

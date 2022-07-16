@@ -25,8 +25,8 @@ import <span>;
 #include <chrono>
 #include <filesystem>
 #include <fstream>
-#include <vector>
 #include <span>
+#include <vector>
 
 #if __has_include(<format>)
 #include <format>
@@ -44,10 +44,10 @@ using charls::jpegls_decoder;
 using charls::jpegls_encoder;
 using std::byte;
 using std::ofstream;
-using std::vector;
 using std::pair;
-using std::chrono::steady_clock;
+using std::vector;
 using std::chrono::duration;
+using std::chrono::steady_clock;
 using std::filesystem::path;
 
 namespace {
@@ -187,14 +187,14 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 #ifdef __cpp_lib_format
     const int interleave_mode_width{color ? 6 : 4};
     puts(std::format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
-                reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
-                std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
+                     reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
+                     std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
 #else
     std::cout << " Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
-         << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
-         << ", compression ratio = " << std::setprecision(2) << std::fixed << std::showpoint << compression_ratio << ":1"
-         << ", encode time = " << std::setprecision(4) << std::chrono::duration<double, std::milli>(encode_duration).count() << " ms"
-         << ", decode time = " << std::setprecision(4) << decode_duration.count() << " ms\n";
+              << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
+              << ", compression ratio = " << std::setprecision(2) << std::fixed << std::showpoint << compression_ratio << ":1"
+              << ", encode time = " << std::setprecision(4) << std::chrono::duration<double, std::milli>(encode_duration).count() << " ms"
+              << ", decode time = " << std::setprecision(4) << decode_duration.count() << " ms\n";
 #endif
 
     return result;
@@ -229,7 +229,10 @@ try
         if (const bool monochrome_anymap{entry.path().extension() == ".pgm"}; monochrome_anymap || entry.path().extension() == ".ppm")
         {
 #ifdef __cpp_lib_format
+#pragma warning(push)
+#pragma warning(disable : 4296) // '<': expression is always false
             puts(std::format("Checking file: {}", entry.path().string()));
+#pragma warning(pop)
 #else
             std::cout << "Checking file: " << entry.path() << "\n";
 #endif

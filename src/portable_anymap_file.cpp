@@ -17,21 +17,21 @@ import <filesystem>;
 
 #include "portable_anymap_file.h"
 
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <utility>
-#include <vector>
-#include <span>
+#include <bit>
 #include <cassert>
 #include <filesystem>
-#include <bit>
+#include <fstream>
+#include <span>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 #endif
 
-using std::vector;
-using std::istream;
 using std::ifstream;
+using std::istream;
+using std::vector;
 
 namespace {
 

@@ -5,19 +5,22 @@
 # Having all warnings enables helps to find problems when new code is added to the project.
 # Some warnings are however to noisy and adding NO_LINT suppressions make the code less readable.
 #
-# -fuchsia-* => Rationale: Rules only apply to Fuchsia projects and are out of scope for CharLS
-# -google-* => Rationale: Rules only apply to Google projects and are out of scope for CharLS
-# -android-* => Rationale: Rules only apply to Android projects and are out of scope for CharLS
-# -llvmlibc-* => Rationale: Rules only apply to LLVM Libc and are out of scope for CharLS
+# -altera-* => Rationale: Rules only apply to Alterna SDK for openCL projects and are out of scope for charls-image-test
+# -fuchsia-* => Rationale: Rules only apply to Fuchsia projects and are out of scope for charls-image-test
+# -google-* => Rationale: Rules only apply to Google projects and are out of scope for charls-image-test
+# -android-* => Rationale: Rules only apply to Android projects and are out of scope for charls-image-test
+# -llvmlibc-* => Rationale: Rules only apply to LLVM Libc and are out of scope for charls-image-test
 # -llvm-header-guard => Rationale: #pragma once is used
 # -hicpp-no-array-decay => Rationale: alias for cppcoreguidelines-pro-bounds-constant-array-index
 # -hicpp-signed-bitwise => Rationale: Bad test, types are checked, not values.
 # -hicpp-vararg => Rationale: Alias
 # -hicpp-avoid-c-arrays => Rationale: Alias
 # -hicpp-multiway-paths-covered => Rationale: switch is often the logical choice.
-# -clang-diagnostic-c++98-compat* => Rationale: jpegls-wic-codec targets C++17
-# -clang-diagnostic-c++98-c++11-compat => Rationale: jpegls-wic-codec targets C++17
-# -clang-diagnostic-c++98-c++11-c++14-compat => Rationale: jpegls-wic-codec targets C++174
+# -clang-diagnostic-c++98-compat* => Rationale: charls-image-test targets C++23
+# -clang-diagnostic-c++98-c++11-compat => Rationale: charls-image-test targets C++23
+# -clang-diagnostic-c++98-c++11-c++14-compat => Rationale: charls-image-test targets C++23
+# -clang-diagnostic-pre-c++14-compat => Rationale: charls-image-test targets C++23
+# -clang-diagnostic-pre-c++17-compat => Rationale: charls-image-test targets C++23
 # -clang-diagnostic-unused-macros => Rationale: Macros defined in header are reported as problem
 # -clang-diagnostic-sign-conversion => Rationale: warning will be enabled in additional steps
 # -clang-diagnostic-switch-enum => Rationale: options are handled by default case
@@ -30,6 +33,7 @@
 # -clang-analyzer-core.NullDereference => Rationale: false warnings, already checked by other checkers that work better.
 # -misc-non-private-member-variables-in-classes => Rationale: design can be ok, manual review is better
 # -misc-unused-using-decls => Rationale: false warning when using array with CTAD
+# -bugprone-easily-swappable-parameters => => Rationale: design can be ok, manual review is better
 # -modernize-use-trailing-return-type => Rationale: A style recommendation, this style is selected for CharLS
 # -modernize-avoid-c-arrays => Rationale: Alias for cppcoreguidelines-avoid-c-arrays
 # -readability-magic-numbers => Rationale: To critical rule, used numbers are logical
@@ -51,6 +55,7 @@
 
 ---
 Checks:          '*,
+                  -altera-*,
                   -fuchsia-*,
                   -google-*,
                   -android-*,
@@ -64,6 +69,8 @@ Checks:          '*,
                   -clang-diagnostic-c++98-compat*,
                   -clang-diagnostic-c++98-c++11-compat,
                   -clang-diagnostic-c++98-c++11-c++14-compat,
+                  -clang-diagnostic-pre-c++14-compat,
+                  -clang-diagnostic-pre-c++17-compat,
                   -clang-diagnostic-unused-macros,
                   -clang-diagnostic-sign-conversion,
                   -clang-diagnostic-switch-enum,
@@ -72,10 +79,12 @@ Checks:          '*,
                   -clang-diagnostic-ctad-maybe-unsupported,
                   -clang-diagnostic-language-extension-token,
                   -clang-diagnostic-missing-prototypes,
+                  -clang-diagnostic-unused-command-line-argument,
                   -clang-analyzer-core.NonNullParamChecker,
                   -clang-analyzer-core.NullDereference,
                   -misc-non-private-member-variables-in-classes,
                   -misc-unused-using-decls,
+                  -bugprone-easily-swappable-parameters,
                   -modernize-use-trailing-return-type,
                   -modernize-avoid-c-arrays,
                   -readability-magic-numbers,
