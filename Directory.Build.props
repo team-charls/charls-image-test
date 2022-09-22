@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- Build to a folder outside the source folders, making it easier to clean. -->
@@ -44,6 +44,7 @@
         C4625 = derived class' : copy constructor was implicitly defined as deleted because a base class copy constructor is inaccessible or deleted [Just informational]
         C4626 = derived class' : assignment operator was implicitly defined as deleted because a base class assignment operator is inaccessible or deleted [Just informational]
         C4668 = symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives' [Just informational]
+        C4702 = unreachable code [Caused by format and usage of header units]
         C4710 = function '' function not inlined [Just informational]
         C4711 = function '' selected for automatic inline expansion [Just informational]
         C4738 = storing 32-bit float result in memory, possible loss of performance [Just informational]
@@ -54,8 +55,9 @@
         C5027 = 'type': move assignment operator was implicitly defined as deleted  [Just informational]
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
+        C5262 = Use [[fallthrough]] when a break statement is intentionally omitted between cases [Reported for external files]
       -->
-      <DisableSpecificWarnings>4514;4571;4623;4625;4626;4668;4710;4711;4738;4820;4866;4868;5026;5027;5039;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4514;4571;4623;4625;4626;4668;4702;4710;4711;4738;4820;4866;4868;5026;5027;5039;5045;5262</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Use the correct value for the __cplusplus macro

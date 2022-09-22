@@ -186,9 +186,12 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 
 #ifdef __cpp_lib_format
     const int interleave_mode_width{color ? 6 : 4};
+#pragma warning(push)
+#pragma warning(disable : 4296) // '<': expression is always false
     puts(std::format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
                      reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
                      std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
+#pragma warning(pop)
 #else
     std::cout << " Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
               << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
