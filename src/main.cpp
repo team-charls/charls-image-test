@@ -109,7 +109,7 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 
     const auto start{steady_clock::now()};
     decoder.decode(decoded);
-    duration<double, std::milli> decode_duration{steady_clock::now() - start};
+    const duration<double, std::milli> decode_duration{steady_clock::now() - start};
 
     if (decoded.size() != original_source.size())
     {
@@ -180,18 +180,23 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     ofstream output(generate_output_filename(source_filename, interleave_mode).string().c_str(), ofstream::binary | ofstream::trunc);
     output.exceptions(ofstream::eofbit | ofstream::failbit | ofstream::badbit);
     output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), static_cast<std::streamsize>(charls_encoded_data.size()));
+    output.close(); // call close explicit to ensure failures are reported.
 
     const double compression_ratio{static_cast<double>(reference_file.image_data().size()) / static_cast<double>(encoded_size)};
     const auto [result, decode_duration]{test_by_decoding(charls_encoded_data, reference_file.image_data())};
 
 #ifdef __cpp_lib_format
     const int interleave_mode_width{color ? 6 : 4};
+#ifdef _MSC_VER
 #pragma warning(push)
-#pragma warning(disable : 4296) // '<': expression is always false
+#pragma warning(disable : 4296) // '<': expression is always false [known problem in MSVC/STL, scheduled to be solved in VS 2022, 17.5]
+#endif
     puts(std::format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
                      reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
                      std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 #else
     std::cout << " Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
               << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
@@ -232,10 +237,14 @@ try
         if (const bool monochrome_anymap{entry.path().extension() == ".pgm"}; monochrome_anymap || entry.path().extension() == ".ppm")
         {
 #ifdef __cpp_lib_format
+#ifdef _MSC_VER
 #pragma warning(push)
-#pragma warning(disable : 4296) // '<': expression is always false
+#pragma warning(disable : 4296) // '<': expression is always false [known problem in MSVC/STL, scheduled to be solved in VS 2022, 17.5]
+#endif
             puts(std::format("Checking file: {}", entry.path().string()));
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 #else
             std::cout << "Checking file: " << entry.path() << "\n";
 #endif
