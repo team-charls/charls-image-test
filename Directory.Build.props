@@ -62,6 +62,7 @@
         C5262 = Use [[fallthrough]] when a break statement is intentionally omitted between cases [Reported for external files]
         C5264 = '': 'const' variable is not used [Just informational]
       -->
+      <DisableSpecificWarnings>4702</DisableSpecificWarnings>
       <DisableSpecificWarnings Condition="'$(CHARLS_IMAGE_TEST_ALL_WARNINGS)'!=''">4514;4571;4623;4625;4626;4668;4702;4710;4711;4738;4820;4866;4868;5026;5027;5039;5045;5262;5264</DisableSpecificWarnings>
 
       <!--
@@ -102,8 +103,8 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
-    <!-- Latest clang-tidy crashes during Win32 builds. -->
-    <EnableClangTidyCodeAnalysis Condition="'$(Platform)'!='Win32'">true</EnableClangTidyCodeAnalysis>
+    <!-- Latest clang-tidy crashes during Win32 builds and clang-tidy is not available for ARM64. -->
+    <EnableClangTidyCodeAnalysis Condition="'$(Platform)'!='Win32' AND '$(Platform)'!='ARM64'">true</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
