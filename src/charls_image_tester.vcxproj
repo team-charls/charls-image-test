@@ -90,6 +90,8 @@
       <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
       <!-- Store only the filename of the PDB file into the .exe/.dll for deterministic builds. -->
       <AdditionalOptions>/PDBALTPATH:%_PDB% %(AdditionalOptions)</AdditionalOptions>
+      <!-- On the ARM64 plaftorm enable Pointer Authentication for return addresses. -->
+      <GuardSignedReturns Condition="'$(Platform)'=='ARM64'">true</GuardSignedReturns>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
