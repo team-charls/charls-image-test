@@ -17,6 +17,9 @@ else()
   target_compile_features(charls-image-test PRIVATE cxx_std_20)
 endif()
 
+set_target_properties(charls-image-test PROPERTIES CXX_VISIBILITY_PRESET hidden)
+set_target_properties(charls-image-test PROPERTIES VISIBILITY_INLINES_HIDDEN 1)
+
 target_sources(charls-image-test
   PRIVATE
     "src/main.cpp"
