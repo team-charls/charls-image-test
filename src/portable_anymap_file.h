@@ -1,6 +1,6 @@
 #pragma once
 
-#ifndef __cpp_modules
+#if !defined __cpp_modules || defined __SANITIZE_ADDRESS__
 
 #include <cstdint>
 #include <vector>
