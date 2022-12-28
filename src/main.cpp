@@ -1,7 +1,7 @@
 // Copyright (c) Team CharLS.
 // SPDX-License-Identifier: MIT
 
-#ifdef __cpp_modules
+#if defined __cpp_modules && !defined __SANITIZE_ADDRESS__
 
 import portable_anymap_file;
 
