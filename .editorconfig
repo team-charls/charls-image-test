@@ -9,6 +9,7 @@ charset = utf-8
 indent_style = space
 trim_trailing_whitespace = true
 insert_final_newline = true
+spelling_exclusion_path = .\exclusion.dic
 
 [*.{h,cpp}]
 indent_size = 4

@@ -187,16 +187,9 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 
 #ifdef __cpp_lib_format
     const int interleave_mode_width{color ? 6 : 4};
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4296) // '<': expression is always false [known problem in MSVC/STL, scheduled to be solved in VS 2022, 17.5]
-#endif
     puts(std::format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
                      reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
                      std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 #else
     std::cout << " Info: original size = " << reference_file.image_data().size() << ", encoded size = " << encoded_size
               << ", interleave mode = " << interleave_mode_to_string(interleave_mode)
@@ -237,14 +230,7 @@ try
         if (const bool monochrome_anymap{entry.path().extension() == ".pgm"}; monochrome_anymap || entry.path().extension() == ".ppm")
         {
 #ifdef __cpp_lib_format
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4296) // '<': expression is always false [known problem in MSVC/STL, scheduled to be solved in VS 2022, 17.5]
-#endif
             puts(std::format("Checking file: {}", entry.path().string()));
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 #else
             std::cout << "Checking file: " << entry.path() << "\n";
 #endif
@@ -265,7 +251,7 @@ try
 }
 catch (const std::runtime_error& error)
 {
-    // By design only catch expected exceptions. Let other types escape to get a dumpfile that can be used for troubleshooting.
+    // By design only catch expected exceptions. Let other types escape to get a dump file that can be used for troubleshooting.
 #ifdef __cpp_lib_format
     puts(std::format("Unexpected failure: {}", error.what()));
 #else
