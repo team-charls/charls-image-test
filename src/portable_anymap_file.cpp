@@ -87,7 +87,7 @@ constexpr void convert_to_little_endian_if_needed(const int32_t bits_per_sample,
 
 } // namespace
 
-portable_anymap_file::portable_anymap_file(std::string_view filename)
+portable_anymap_file::portable_anymap_file(const std::string_view filename)
 {
     ifstream pnm_file;
     pnm_file.exceptions(ifstream::eofbit | ifstream::failbit | ifstream::badbit);
