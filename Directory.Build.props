@@ -49,6 +49,7 @@
         C4625 = derived class' : copy constructor was implicitly defined as deleted because a base class copy constructor is inaccessible or deleted [Just informational]
         C4626 = derived class' : assignment operator was implicitly defined as deleted because a base class assignment operator is inaccessible or deleted [Just informational]
         C4668 = symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives' [Just informational]
+        C4686 = 'user-defined type' : possible change in behavior, change in UDT return calling convention [False positive for STL header, even if all external warnings are disabled]
         C4702 = unreachable code [Caused by format and usage of header units]
         C4710 = function '' function not inlined [Just informational]
         C4711 = function '' selected for automatic inline expansion [Just informational]
@@ -65,7 +66,7 @@
         C5264 = '': 'const' variable is not used [Just informational]
       -->
       <DisableSpecificWarnings>4702</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(CHARLS_IMAGE_TEST_ALL_WARNINGS)'!=''">4355;4514;4571;4623;4625;4626;4668;4702;4710;4711;4738;4820;4866;4868;5204;5026;5027;5039;5045;5262;5264</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(CHARLS_IMAGE_TEST_ALL_WARNINGS)'!=''">4355;4514;4571;4623;4625;4626;4668;4686;4702;4710;4711;4738;4820;4866;4868;5204;5026;5027;5039;5045;5262;5264</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Use the correct value for the __cplusplus macro
