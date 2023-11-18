@@ -19,6 +19,4 @@ import <span>;
 import <string_view>;
 import <cstddef>;
 
-import <charls/charls.h>;
-
 #endif

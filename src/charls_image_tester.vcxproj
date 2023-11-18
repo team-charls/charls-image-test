@@ -95,6 +95,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\charls\include\charls\charls.ixx" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>

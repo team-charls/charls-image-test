@@ -1,11 +1,10 @@
-// Copyright (c) Team CharLS.
+// Copyright (c) Team Ch//arLS.
 // SPDX-License-Identifier: MIT
 
 #if defined __cpp_modules && !defined __SANITIZE_ADDRESS__
 
+import charls;
 import portable_anymap_file;
-
-import <charls/charls.h>;
 
 import <chrono>;
 import <filesystem>;
