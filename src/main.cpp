@@ -1,5 +1,5 @@
-// Copyright (c) Team Ch//arLS.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 #if defined __cpp_modules && !defined __SANITIZE_ADDRESS__
 
@@ -22,9 +22,10 @@ import <span>;
 
 #include <cassert>
 #include <chrono>
+#include <cstddef>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <span>
 #include <vector>
 
 #if __has_include(<format>)
@@ -87,7 +88,8 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 }
 
 
-[[nodiscard]] portable_anymap_file read_anymap_reference_file(const char* filename, const interleave_mode interleave_mode)
+[[nodiscard]]
+portable_anymap_file read_anymap_reference_file(const char* filename, const interleave_mode interleave_mode)
 {
     portable_anymap_file reference_file(filename);
 
@@ -100,7 +102,8 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
 }
 
 
-[[nodiscard]] pair<bool, duration<double, std::milli>> test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source)
+[[nodiscard]]
+pair<bool, duration<double, std::milli>> test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source)
 {
     const jpegls_decoder decoder{encoded_source, true};
 
@@ -131,7 +134,8 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     return {true, decode_duration};
 }
 
-[[nodiscard]] const char* interleave_mode_to_string(const interleave_mode interleave_mode) noexcept
+[[nodiscard]]
+const char* interleave_mode_to_string(const interleave_mode interleave_mode) noexcept
 {
     switch (interleave_mode)
     {
@@ -149,7 +153,8 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     return "";
 }
 
-[[nodiscard]] path generate_output_filename(const path& source_filename, const interleave_mode interleave_mode)
+[[nodiscard]]
+path generate_output_filename(const path& source_filename, const interleave_mode interleave_mode)
 {
     path output_filename{source_filename};
     output_filename.replace_filename(output_filename.stem().string() + "-" + interleave_mode_to_string(interleave_mode));
@@ -158,7 +163,8 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     return output_filename;
 }
 
-[[nodiscard]] bool check_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none, [[maybe_unused]] const bool color = false)
+[[nodiscard]]
+bool check_file(const path& source_filename, const interleave_mode interleave_mode = interleave_mode::none, [[maybe_unused]] const bool color = false)
 {
     const portable_anymap_file reference_file{read_anymap_reference_file(source_filename.string().c_str(), interleave_mode)};
 
@@ -200,7 +206,8 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
     return result;
 }
 
-[[nodiscard]] bool check_color_file(const path& source_filename)
+[[nodiscard]]
+bool check_color_file(const path& source_filename)
 {
     auto result{check_file(source_filename, interleave_mode::none, true)};
     if (!result)

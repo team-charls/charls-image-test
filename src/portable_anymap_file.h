@@ -3,8 +3,8 @@
 #if !defined __cpp_modules || defined __SANITIZE_ADDRESS__
 
 #include <cstdint>
-#include <vector>
 #include <string_view>
+#include <vector>
 
 #endif
 
@@ -22,40 +22,46 @@ public:
     /// <exception cref="ifstream::failure">Thrown when the input file cannot be read.</exception>
     explicit portable_anymap_file(std::string_view filename);
 
-    [[nodiscard]] uint32_t width() const noexcept
+    [[nodiscard]]
+    std::uint32_t width() const noexcept
     {
         return width_;
     }
 
-    [[nodiscard]] uint32_t height() const noexcept
+    [[nodiscard]]
+    std::uint32_t height() const noexcept
     {
         return height_;
     }
 
-    [[nodiscard]] int32_t component_count() const noexcept
+    [[nodiscard]]
+    std::int32_t component_count() const noexcept
     {
         return component_count_;
     }
 
-    [[nodiscard]] int32_t bits_per_sample() const noexcept
+    [[nodiscard]]
+    std::int32_t bits_per_sample() const noexcept
     {
         return bits_per_sample_;
     }
 
-    [[nodiscard]] std::vector<std::byte>& image_data() noexcept
+    [[nodiscard]]
+    std::vector<std::byte>& image_data() noexcept
     {
         return input_buffer_;
     }
 
-    [[nodiscard]] const std::vector<std::byte>& image_data() const noexcept
+    [[nodiscard]]
+    const std::vector<std::byte>& image_data() const noexcept
     {
         return input_buffer_;
     }
 
 private:
-    int32_t component_count_;
-    uint32_t width_;
-    uint32_t height_;
-    int32_t bits_per_sample_;
+    std::int32_t component_count_;
+    std::uint32_t width_;
+    std::uint32_t height_;
+    std::int32_t bits_per_sample_;
     std::vector<std::byte> input_buffer_;
 };

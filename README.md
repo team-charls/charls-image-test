@@ -13,4 +13,4 @@ Note 1: the AnyMap images are not part of this repository. These images can be d
 
 Note 2: use git clone --recurse-submodules to ensure that the CharLS sub module is also cloned.
 
-Note 3: Visual Studio 2022 17.6.0 Preview 7.0 or newer is needed to build for Windows.
+Note 3: Visual Studio 2022 17.9.0 or newer is needed to build for Windows.

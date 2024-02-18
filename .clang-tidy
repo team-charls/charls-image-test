@@ -34,6 +34,7 @@
 # -clang-analyzer-core.NullDereference => Rationale: false warnings, already checked by other checkers that work better.
 # -misc-non-private-member-variables-in-classes => Rationale: design can be ok, manual review is better
 # -misc-unused-using-decls => Rationale: false warning when using array with CTAD
+# -misc-include-cleaner => Conflicts with usage of C++ modules
 # -bugprone-easily-swappable-parameters => => Rationale: design can be ok, manual review is better
 # -modernize-use-trailing-return-type => Rationale: A style recommendation, this style is selected for CharLS
 # -modernize-avoid-c-arrays => Rationale: Alias for cppcoreguidelines-avoid-c-arrays
@@ -86,6 +87,7 @@ Checks:          '*,
                   -clang-analyzer-core.NullDereference,
                   -misc-non-private-member-variables-in-classes,
                   -misc-unused-using-decls,
+                  -misc-include-cleaner,
                   -bugprone-easily-swappable-parameters,
                   -modernize-use-trailing-return-type,
                   -modernize-avoid-c-arrays,

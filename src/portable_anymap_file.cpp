@@ -32,12 +32,14 @@ import <filesystem>;
 using std::ifstream;
 using std::istream;
 using std::vector;
+using std::uint32_t;
+using std::int32_t;
 
 namespace {
 
-vector<int> read_header(istream& pnm_file)
+vector<int32_t> read_header(istream& pnm_file)
 {
-    vector<int> result;
+    vector<int32_t> result;
 
     // All portable anymap format (PNM) start with the character P.
     if (const auto first{static_cast<char>(pnm_file.get())}; first != 'P')
@@ -51,7 +53,7 @@ vector<int> read_header(istream& pnm_file)
 
         while (result.size() < 4)
         {
-            int value{-1};
+            int32_t value{-1};
             line >> value;
             if (value <= 0)
                 break;
@@ -75,7 +77,7 @@ constexpr int32_t max_value_to_bits_per_sample(const int32_t max_value) noexcept
 
 constexpr void convert_to_little_endian_if_needed(const int32_t bits_per_sample, std::span<std::byte> input_buffer) noexcept
 {
-    // Anymap files with multi byte pixels are stored in big endian format in the file.
+    // Anymap files with multibyte pixels are stored in big endian format in the file.
     if (bits_per_sample > 8)
     {
         for (size_t i{}; i < input_buffer.size() - 1; i += 2)

@@ -1,5 +1,5 @@
 // Copyright (c) Team CharLS.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BSD-3-Clause
 
 // The purpose of this file is to build the header units. It is marked with ScanSourceForModuleDependencies = true in the vcxproj file.
 
