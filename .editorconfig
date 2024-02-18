@@ -1,5 +1,5 @@
 # Copyright (c) Team CharLS.
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: BSD-3-Clause
 
 root = true
 
@@ -8,8 +8,8 @@ root = true
 charset = utf-8
 indent_style = space
 trim_trailing_whitespace = true
-insert_final_newline = true
 spelling_exclusion_path = .\exclusion.dic
 
 [*.{h,cpp}]
 indent_size = 4
+insert_final_newline = true

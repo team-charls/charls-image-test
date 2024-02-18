@@ -5,9 +5,7 @@
 
 export module portable_anymap_file;
 
-import <cstddef>;
-import <vector>;
-import <string_view>;
+import std;
 
 export
 {
