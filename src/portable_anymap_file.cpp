@@ -5,13 +5,8 @@
 
 module portable_anymap_file;
 
-import <string>;
-import <sstream>;
-import <fstream>;
-import <utility>;
-import <span>;
+import std;
 import <cassert>;
-import <filesystem>;
 
 #else
 

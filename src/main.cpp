@@ -3,16 +3,9 @@
 
 #if defined __cpp_modules && !defined __SANITIZE_ADDRESS__
 
+import std;
 import charls;
 import portable_anymap_file;
-
-import <chrono>;
-import <filesystem>;
-import <vector>;
-import <fstream>;
-import <cassert>;
-import <format>;
-import <span>;
 
 #else
 
@@ -42,17 +35,19 @@ import <span>;
 using charls::interleave_mode;
 using charls::jpegls_decoder;
 using charls::jpegls_encoder;
-using std::byte;
-using std::ofstream;
-using std::pair;
-using std::vector;
-using std::chrono::duration;
-using std::chrono::steady_clock;
-using std::filesystem::path;
+
+using namespace std;
+using chrono::duration;
+using chrono::steady_clock;
+using filesystem::path;
+
 
 namespace {
 
-void puts(const std::string& str) noexcept
+constexpr int exit_success{};
+constexpr int exit_failure{1};
+
+void puts(const string& str) noexcept
 {
     std::puts(str.c_str());
 }
@@ -103,7 +98,7 @@ portable_anymap_file read_anymap_reference_file(const char* filename, const inte
 
 
 [[nodiscard]]
-pair<bool, duration<double, std::milli>> test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source)
+pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source)
 {
     const jpegls_decoder decoder{encoded_source, true};
 
@@ -111,7 +106,7 @@ pair<bool, duration<double, std::milli>> test_by_decoding(const vector<byte>& en
 
     const auto start{steady_clock::now()};
     decoder.decode(decoded);
-    const duration<double, std::milli> decode_duration{steady_clock::now() - start};
+    const duration<double, milli> decode_duration{steady_clock::now() - start};
 
     if (decoded.size() != original_source.size())
     {
@@ -149,8 +144,7 @@ const char* interleave_mode_to_string(const interleave_mode interleave_mode) noe
         return "sample";
     }
 
-    assert(false);
-    return "";
+    unreachable();
 }
 
 [[nodiscard]]
@@ -228,10 +222,10 @@ try
     if (argc < 2)
     {
         puts("usage: charls_image_tester <directory-to-test>");
-        return EXIT_FAILURE;
+        return exit_failure;
     }
 
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(argv[1]))
+    for (const auto& entry : filesystem::recursive_directory_iterator(argv[1]))
     {
         if (const bool monochrome_anymap{entry.path().extension() == ".pgm"}; monochrome_anymap || entry.path().extension() == ".ppm")
         {
@@ -249,13 +243,13 @@ try
 #endif
 
             if (!result)
-                return EXIT_FAILURE;
+                return exit_failure;
         }
     }
 
-    return EXIT_SUCCESS;
+    return exit_success;
 }
-catch (const std::runtime_error& error)
+catch (const runtime_error& error)
 {
     // By design only catch expected exceptions. Let other types escape to get a dump file that can be used for troubleshooting.
 #ifdef __cpp_lib_format
@@ -263,5 +257,5 @@ catch (const std::runtime_error& error)
 #else
     std::cout << "Unexpected failure: " << error.what();
 #endif
-    return EXIT_FAILURE;
+    return exit_failure;
 }

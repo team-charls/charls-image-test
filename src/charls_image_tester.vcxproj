@@ -97,10 +97,9 @@
   <ItemGroup>
     <ClCompile Include="..\charls\include\charls\charls.ixx" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="portable_anymap_file.cpp">
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
-    <ClCompile Include="portable_anymap_file.cpp" />
     <ClCompile Include="portable_anymap_file.ixx" />
   </ItemGroup>
   <ItemGroup>

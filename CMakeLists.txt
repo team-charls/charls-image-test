@@ -1,7 +1,7 @@
 ﻿# Copyright (c) Team CharLS.
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: BSD-3-Clause
 
-cmake_minimum_required(VERSION 3.22...3.22)
+cmake_minimum_required(VERSION 3.22...3.28)
 
 project("charls-image-test")
 
