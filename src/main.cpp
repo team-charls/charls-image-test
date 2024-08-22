@@ -1,7 +1,7 @@
 // Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#if defined __cpp_modules && !defined __SANITIZE_ADDRESS__
+#if defined __cpp_modules
 
 import std;
 import charls;
@@ -100,7 +100,7 @@ portable_anymap_file read_anymap_reference_file(const char* filename, const inte
 [[nodiscard]]
 pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded_source, const vector<byte>& original_source)
 {
-    const jpegls_decoder decoder{encoded_source, true};
+    jpegls_decoder decoder{encoded_source, true};
 
     vector<byte> decoded(decoder.destination_size());
 

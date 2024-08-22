@@ -31,5 +31,8 @@ C26490: Don't use reinterpret_cast
 C26494: Variable 'x' is uninitialized. Always initialize an object
 -> Rationale: many false warnings, other analyzers are better.
 
+C26495: Variable 'x' is uninitialized. Always initialize a member variable (type.6)
+-> Rationale: many false warnings in external (STL code)
+
 C26821: Consider using gsl::span instead of std::span to guarantee runtime bounds safety (gsl.view).
 -> Rationale: MSVC std:span() will check runtime bounds in debug mode: use std::span.
