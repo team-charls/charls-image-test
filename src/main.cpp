@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-#if defined __cpp_modules && defined __MSVC__
+#if defined __cpp_modules && defined _MSC_VER
 
 import std;
 import charls;

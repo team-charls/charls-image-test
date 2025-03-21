@@ -1,6 +1,9 @@
+// SPDX-FileCopyrightText: © 2021 Team CharLS
+// SPDX-License-Identifier: BSD-3-Clause
+
 #pragma once
 
-#if !defined __cpp_modules || defined __SANITIZE_ADDRESS__
+#if !defined __cpp_modules
 
 #include <cstdint>
 #include <string_view>

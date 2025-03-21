@@ -23,9 +23,8 @@
       <!-- Use all cores to speed up the compilation (MS recommended best practice). -->
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
 
-      <!-- Explicit define that all projects are compiled according the C++20 standard -->
-      <!-- Note: use stdcpplatest until MSVC supports stdcpp20 and std::format (expected time frame Visual Studio 2022) -->
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <!-- Explicit define that all projects are compiled according the C++23 standard -->
+      <LanguageStandard>stdcpp23</LanguageStandard>
 
       <!-- To ensure high quality C++ code use warning level 4 and treat warnings as errors to ensure warnings are fixed promptly. -->
       <WarningLevel>Level4</WarningLevel>
@@ -47,6 +46,7 @@
         C4623 = derived class' : default constructor was implicitly defined as deleted because a base class default constructor is inaccessible or deleted [Just informational]
         C4625 = derived class' : copy constructor was implicitly defined as deleted because a base class copy constructor is inaccessible or deleted [Just informational]
         C4626 = derived class' : assignment operator was implicitly defined as deleted because a base class assignment operator is inaccessible or deleted [Just informational]
+        C4686: 'std::_Decode_utf': possible change in behavior, change in UDT return calling convention [in <format> header] [Just informational]
         C4710 = function '' function not inlined [Just informational]
         C4711 = function '' selected for automatic inline expansion [Just informational]
         C4738 = storing 32-bit float result in memory, possible loss of performance [Just informational]
@@ -59,7 +59,7 @@
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
         C5264 = '': 'const' variable is not used [Just informational]
       -->
-      <DisableSpecificWarnings Condition="'$(CHARLS_IMAGE_TEST_ALL_WARNINGS)'!=''">4514;4571;4623;4625;4626;4702;4710;4711;4738;4820;4866;4868;5026;5027;5039;5045;5264</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(CHARLS_IMAGE_TEST_ALL_WARNINGS)'!=''">4514;4571;4623;4625;4626;4686;4702;4710;4711;4738;4820;4866;4868;5026;5027;5039;5045;5264</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Use the correct value for the __cplusplus macro
