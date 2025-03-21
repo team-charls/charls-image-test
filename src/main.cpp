@@ -1,4 +1,4 @@
-// Copyright (c) Team CharLS.
+// SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
 #if defined __cpp_modules
@@ -64,18 +64,18 @@ void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t he
         auto* buffer16{reinterpret_cast<uint16_t*>(work_buffer.data())};
         for (size_t i{}; i != samples_per_plane; ++i)
         {
-            buffer16[i] = source_buffer16[i * 3 + 0];
-            buffer16[i + 1 * samples_per_plane] = source_buffer16[i * 3 + 1];
-            buffer16[i + 2 * samples_per_plane] = source_buffer16[i * 3 + 2];
+            buffer16[i] = source_buffer16[(i * 3) + 0];
+            buffer16[i + (1 * samples_per_plane)] = source_buffer16[(i * 3) + 1];
+            buffer16[i + (2 * samples_per_plane)] = source_buffer16[(i * 3) + 2];
         }
     }
     else
     {
         for (size_t i{}; i != samples_per_plane; ++i)
         {
-            work_buffer[i] = buffer[i * 3 + 0];
-            work_buffer[i + 1 * samples_per_plane] = buffer[i * 3 + 1];
-            work_buffer[i + 2 * samples_per_plane] = buffer[i * 3 + 2];
+            work_buffer[i] = buffer[(i * 3) + 0];
+            work_buffer[i + (1 * samples_per_plane)] = buffer[(i * 3) + 1];
+            work_buffer[i + (2 * samples_per_plane)] = buffer[(i * 3) + 2];
         }
     }
 
@@ -102,7 +102,7 @@ pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded
 {
     jpegls_decoder decoder{encoded_source, true};
 
-    vector<byte> decoded(decoder.destination_size());
+    vector<byte> decoded(decoder.get_destination_size());
 
     const auto start{steady_clock::now()};
     decoder.decode(decoded);
@@ -114,7 +114,7 @@ pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded
         return {false, decode_duration};
     }
 
-    if (decoder.near_lossless() == 0)
+    if (decoder.get_near_lossless() == 0)
     {
         for (size_t i{}; i < original_source.size(); ++i)
         {
