@@ -1,7 +1,7 @@
 ﻿# Copyright (c) Team CharLS.
 # SPDX-License-Identifier: BSD-3-Clause
 
-cmake_minimum_required(VERSION 3.22...3.28)
+cmake_minimum_required(VERSION 3.22...3.31)
 
 project("charls-image-test")
 
@@ -10,11 +10,11 @@ add_subdirectory(charls)
 add_executable(charls-image-test "")
 
 if(MSVC)
-  # MSVC++ can use C++ modules, but CMake has not yet offical suppor for it.
+  # MSVC++ can use C++ modules, but CMake has not yet official support for it.
   # Use C++17 when building with CMake, The MSBuild .vcxproj uses C++20.
   target_compile_features(charls-image-test PRIVATE cxx_std_17)
 else()
-  target_compile_features(charls-image-test PRIVATE cxx_std_20)
+  target_compile_features(charls-image-test PRIVATE cxx_std_23)
 endif()
 
 set_target_properties(charls-image-test PROPERTIES CXX_VISIBILITY_PRESET hidden)

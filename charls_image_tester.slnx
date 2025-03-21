@@ -1,0 +1,23 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Checked" />
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".clang-format" />
+    <File Path=".clang-tidy" />
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="default.ruleset" />
+    <File Path="default.ruleset.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="LICENSE.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="charls/src/CharLS.vcxproj" Id="1e31f9f1-f175-4082-b3e2-b1f0eca3f44c" />
+  <Project Path="src/charls_image_tester.vcxproj" Id="796be062-4baf-42c4-b854-9f1e6c9f3f7c" />
+</Solution>
