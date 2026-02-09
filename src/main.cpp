@@ -19,8 +19,8 @@ import portable_anymap_file;
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <print>
 #include <vector>
-#include <format>
 
 #endif
 
@@ -38,11 +38,6 @@ namespace {
 
 constexpr int exit_success{};
 constexpr int exit_failure{1};
-
-void puts(const string& str) noexcept
-{
-    std::puts(str.c_str());
-}
 
 void triplet_to_planar(vector<byte>& buffer, const size_t width, const size_t height, const int32_t bits_per_sample)
 {
@@ -102,7 +97,7 @@ pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded
 
     if (decoded.size() != original_source.size())
     {
-        puts("Pixel data size doesn't match");
+        println("Pixel data size doesn't match");
         return {false, decode_duration};
     }
 
@@ -112,7 +107,7 @@ pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded
         {
             if (decoded[i] != original_source[i])
             {
-                puts("Pixel data value doesn't match");
+                println("Pixel data value doesn't match");
                 return {false, decode_duration};
             }
         }
@@ -170,16 +165,16 @@ bool check_file(const path& source_filename, const interleave_mode interleave_mo
 
     ofstream output(generate_output_filename(source_filename, interleave_mode).string().c_str(), ofstream::binary | ofstream::trunc);
     output.exceptions(ofstream::eofbit | ofstream::failbit | ofstream::badbit);
-    output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), static_cast<std::streamsize>(charls_encoded_data.size()));
+    output.write(reinterpret_cast<const char*>(charls_encoded_data.data()), static_cast<streamsize>(charls_encoded_data.size()));
     output.close(); // call close explicit to ensure failures are reported.
 
     const double compression_ratio{static_cast<double>(reference_file.image_data().size()) / static_cast<double>(encoded_size)};
     const auto [result, decode_duration]{test_by_decoding(charls_encoded_data, reference_file.image_data())};
 
     const int interleave_mode_width{color ? 6 : 4};
-    puts(std::format(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
-                     reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
-                     std::chrono::duration<double, std::milli>(encode_duration).count(), decode_duration.count()));
+    println(" Info: original size = {}, encoded size = {}, interleave mode = {:{}}, compression ratio = {:.2}:1, encode time = {:.4} ms, decode time = {:.4} ms",
+                 reference_file.image_data().size(), encoded_size, interleave_mode_to_string(interleave_mode), interleave_mode_width, compression_ratio,
+                 chrono::duration<double, milli>(encode_duration).count(), decode_duration.count());
 
     return result;
 }
@@ -205,7 +200,7 @@ try
 {
     if (argc < 2)
     {
-        puts("usage: charls_image_tester <directory-to-test>");
+        println("usage: charls_image_tester <directory-to-test>");
         return exit_failure;
     }
 
@@ -213,10 +208,10 @@ try
     {
         if (const bool monochrome_anymap{entry.path().extension() == ".pgm"}; monochrome_anymap || entry.path().extension() == ".ppm")
         {
-            puts(std::format("Checking file: {}", entry.path().string()));
+            println("Checking file: {}", entry.path().string());
             const bool result{monochrome_anymap ? check_file(entry.path()) : check_color_file(entry.path())};
 
-            puts(std::format(" Status: {}", result ? "Passed" : "Failed"));
+            println(" Status: {}", result ? "Passed" : "Failed");
 
             if (!result)
                 return exit_failure;
@@ -228,6 +223,6 @@ try
 catch (const runtime_error& error)
 {
     // By design only catch expected exceptions. Let other types escape to get a dump file that can be used for troubleshooting.
-    puts(std::format("Unexpected failure: {}", error.what()));
+    println("Unexpected failure: {}", error.what());
     return exit_failure;
 }
