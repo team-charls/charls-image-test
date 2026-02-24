@@ -17,12 +17,6 @@
     <ClCompile Include="portable_anymap_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="portable_anymap_file.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\charls\include\charls\charls.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="app.manifest" />

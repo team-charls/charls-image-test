@@ -1,17 +1,9 @@
 // SPDX-FileCopyrightText: © 2019 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-#if defined __cpp_modules && defined _MSC_VER
-
-import std;
-import charls;
-import portable_anymap_file;
-
-#else
-
 #include "portable_anymap_file.h"
 
-#include <charls/charls.hpp>
+#include <charls/charls.h>
 
 #include <cassert>
 #include <chrono>
@@ -21,8 +13,6 @@ import portable_anymap_file;
 #include <fstream>
 #include <print>
 #include <vector>
-
-#endif
 
 using charls::interleave_mode;
 using charls::jpegls_decoder;
@@ -89,7 +79,7 @@ pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded
 {
     jpegls_decoder decoder{encoded_source, true};
 
-    vector<byte> decoded(decoder.get_destination_size());
+    vector<byte> decoded(decoder.destination_size());
 
     const auto start{steady_clock::now()};
     decoder.decode(decoded);
@@ -101,7 +91,7 @@ pair<bool, duration<double, milli>> test_by_decoding(const vector<byte>& encoded
         return {false, decode_duration};
     }
 
-    if (decoder.get_near_lossless() == 0)
+    if (decoder.near_lossless() == 0)
     {
         for (size_t i{}; i < original_source.size(); ++i)
         {

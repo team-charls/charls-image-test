@@ -1,15 +1,6 @@
 // Copyright (c) Team CharLS.
 // SPDX-License-Identifier: BSD-3-Clause
 
-#if defined __cpp_modules && !defined __SANITIZE_ADDRESS__
-
-module portable_anymap_file;
-
-import std;
-import <cassert>;
-
-#else
-
 #include "portable_anymap_file.h"
 
 #include <bit>
@@ -21,8 +12,6 @@ import <cassert>;
 #include <string>
 #include <utility>
 #include <vector>
-
-#endif
 
 using std::ifstream;
 using std::istream;

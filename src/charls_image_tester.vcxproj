@@ -95,12 +95,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\charls\include\charls\charls.ixx" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="portable_anymap_file.cpp">
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
     </ClCompile>
-    <ClCompile Include="portable_anymap_file.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\charls\src\CharLS.vcxproj">

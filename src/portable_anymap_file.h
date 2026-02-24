@@ -3,13 +3,10 @@
 
 #pragma once
 
-#if !defined __cpp_modules
-
 #include <cstdint>
 #include <string_view>
 #include <vector>
 
-#endif
 
 /// <summary>
 /// This class can read an image stored in the Portable Anymap Format (PNM).
