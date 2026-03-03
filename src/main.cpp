@@ -11,8 +11,32 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <print>
+#include <version>
 #include <vector>
+
+#if __cpp_lib_print >= 202207L
+#include <print>
+#else
+#include <cstdio>
+#include <format>
+
+// Fallback println implementation using std::format and puts
+namespace
+{
+
+template<typename... Args>
+void println(const std::string_view fmt, Args&&... args)
+{
+    puts(std::vformat(fmt, std::make_format_args(args...)).c_str());
+}
+
+void println(const char* str)
+{
+    puts(str);
+}
+
+}
+#endif
 
 using charls::interleave_mode;
 using charls::jpegls_decoder;
